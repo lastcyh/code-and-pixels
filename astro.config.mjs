@@ -60,9 +60,8 @@ export default defineConfig({
 			animationSelector: '[class*="transition-swup-"]',
 		}),
 		icon({
-			include: {
-				"preprocess: vitePreprocess(),": ["*"],
-				"fa6-brands": ["*"],
+		include: {
+			"fa6-brands": ["*"],
 				"fa6-regular": ["*"],
 				"fa6-solid": ["*"],
 			},

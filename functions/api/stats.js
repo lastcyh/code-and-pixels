@@ -35,9 +35,7 @@ export async function onRequest({ request, env }) {
     // 如果你看到这个详细的 JSON，说明代码部署成功了，但绑定还没生效
     return new Response(JSON.stringify({ 
       error: 'KV not bound',
-      message: 'Please bind a KV Namespace with variable name "BLOG_STATS" in EdgeOne Console.',
-      debug_env_keys: env ? Object.keys(env) : 'env is undefined',
-      debug_global_check: typeof BLOG_STATS !== 'undefined' ? 'found in global' : 'not in global'
+      message: 'Please bind a KV Namespace with variable name "BLOG_STATS" in EdgeOne Console.'
     }), { 
       status: 500,
       headers: { 'Content-Type': 'application/json', ...corsHeaders }
