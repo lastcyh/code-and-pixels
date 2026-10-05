@@ -5,6 +5,7 @@ on:
     branches: [ master ] # Adjust branches as needed
   pull_request:
     branches: [ master ] # Adjust branches as needed
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
