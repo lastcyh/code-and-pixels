@@ -1,99 +1,76 @@
-# 🍥Fuwari  
-![Node.js >= 20](https://img.shields.io/badge/node.js-%3E%3D20-brightgreen) 
-![pnpm >= 9](https://img.shields.io/badge/pnpm-%3E%3D9-blue) 
-[![DeepWiki](https://img.shields.io/badge/DeepWiki-saicaca%2Ffuwari-blue.svg?logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACwAAAAyCAYAAAAnWDnqAAAAAXNSR0IArs4c6QAAA05JREFUaEPtmUtyEzEQhtWTQyQLHNak2AB7ZnyXZMEjXMGeK/AIi+QuHrMnbChYY7MIh8g01fJoopFb0uhhEqqcbWTp06/uv1saEDv4O3n3dV60RfP947Mm9/SQc0ICFQgzfc4CYZoTPAswgSJCCUJUnAAoRHOAUOcATwbmVLWdGoH//PB8mnKqScAhsD0kYP3j/Yt5LPQe2KvcXmGvRHcDnpxfL2zOYJ1mFwrryWTz0advv1Ut4CJgf5uhDuDj5eUcAUoahrdY/56ebRWeraTjMt/00Sh3UDtjgHtQNHwcRGOC98BJEAEymycmYcWwOprTgcB6VZ5JK5TAJ+fXGLBm3FDAmn6oPPjR4rKCAoJCal2eAiQp2x0vxTPB3ALO2CRkwmDy5WohzBDwSEFKRwPbknEggCPB/imwrycgxX2NzoMCHhPkDwqYMr9tRcP5qNrMZHkVnOjRMWwLCcr8ohBVb1OMjxLwGCvjTikrsBOiA6fNyCrm8V1rP93iVPpwaE+gO0SsWmPiXB+jikdf6SizrT5qKasx5j8ABbHpFTx+vFXp9EnYQmLx02h1QTTrl6eDqxLnGjporxl3NL3agEvXdT0WmEost648sQOYAeJS9Q7bfUVoMGnjo4AZdUMQku50McDcMWcBPvr0SzbTAFDfvJqwLzgxwATnCgnp4wDl6Aa+Ax283gghmj+vj7feE2KBBRMW3FzOpLOADl0Isb5587h/U4gGvkt5v60Z1VLG8BhYjbzRwyQZemwAd6cCR5/XFWLYZRIMpX39AR0tjaGGiGzLVyhse5C9RKC6ai42ppWPKiBagOvaYk8lO7DajerabOZP46Lby5wKjw1HCRx7p9sVMOWGzb/vA1hwiWc6jm3MvQDTogQkiqIhJV0nBQBTU+3okKCFDy9WwferkHjtxib7t3xIUQtHxnIwtx4mpg26/HfwVNVDb4oI9RHmx5WGelRVlrtiw43zboCLaxv46AZeB3IlTkwouebTr1y2NjSpHz68WNFjHvupy3q8TFn3Hos2IAk4Ju5dCo8B3wP7VPr/FGaKiG+T+v+TQqIrOqMTL1VdWV1DdmcbO8KXBz6esmYWYKPwDL5b5FA1a0hwapHiom0r/cKaoqr+27/XcrS5UwSMbQAAAABJRU5ErkJggg==)](https://deepwiki.com/saicaca/fuwari)
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fsaicaca%2Ffuwari.svg?type=shield&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Fsaicaca%2Ffuwari?ref=badge_shield&issueType=license)
+# Code & Pixels
 
-A static blog template built with [Astro](https://astro.build).
+![Node.js >= 20](https://img.shields.io/badge/node.js-%3E%3D20-brightgreen)
+![pnpm >= 9](https://img.shields.io/badge/pnpm-%3E%3D9-blue)
+![License: MIT](https://img.shields.io/badge/license-MIT-green)
 
-[**🖥️ Live Demo (Vercel)**](https://fuwari.vercel.app)
+基于开源博客主题 [Fuwari](https://github.com/saicaca/fuwari) 构建的个人博客，运行在腾讯云 [EdgeOne Pages](https://edgeone.ai/products/pages) 上。
 
-![Preview Image](https://raw.githubusercontent.com/saicaca/resource/main/fuwari/home.png)
+**线上地址**：[www.sakasa.cn](https://www.sakasa.cn/)
 
-🌏 README in
-[**中文**](https://github.com/saicaca/fuwari/blob/main/docs/README.zh-CN.md) /
-[**日本語**](https://github.com/saicaca/fuwari/blob/main/docs/README.ja.md) /
-[**한국어**](https://github.com/saicaca/fuwari/blob/main/docs/README.ko.md) /
-[**Español**](https://github.com/saicaca/fuwari/blob/main/docs/README.es.md) /
-[**ไทย**](https://github.com/saicaca/fuwari/blob/main/docs/README.th.md) /
-[**Tiếng Việt**](https://github.com/saicaca/fuwari/blob/main/docs/README.vi.md) /
-[**Bahasa Indonesia**](https://github.com/saicaca/fuwari/blob/main/docs/README.id.md) (Provided by the community and may not always be up-to-date)
+## ✨ 站点特性
 
-## ✨ Features
+在 Fuwari 原有能力（Astro 5 + Svelte 5 + Tailwind CSS、明暗模式、主题色自定义、Pagefind 全文搜索、文章目录、RSS、平滑切页动画）基础上，做了以下定制：
 
-- [x] Built with [Astro](https://astro.build) and [Tailwind CSS](https://tailwindcss.com)
-- [x] Smooth animations and page transitions
-- [x] Light / dark mode
-- [x] Customizable theme colors & banner
-- [x] Responsive design
-- [x] Search functionality with [Pagefind](https://pagefind.app/)
-- [x] [Markdown extended features](https://github.com/saicaca/fuwari?tab=readme-ov-file#-markdown-extended-syntax)
-- [x] Table of contents
-- [x] RSS feed
+- 📊 **文章浏览量 & 点赞** — 基于 EdgeOne Pages Functions（`functions/api/stats.js`）+ KV 存储实现；浏览器端通过 sessionStorage / localStorage 防止刷新重复计数
+- 📖 **阅读进度条** — 固定在页面顶部，跟随滚动（`src/components/control/ReadingProgress.astro`）
+- 🔍 **中文搜索优化** — Pagefind 强制中文分词（`pagefind.yml`）
+- 🚧 **自定义 404 页** — 展示最近的文章（`src/pages/404.astro`）
+- 🇨🇳 **页脚 ICP / 公安备案信息**
 
-## 🚀 Getting Started
+## 🚀 部署（EdgeOne Pages）
 
-1. Create your blog repository:
-    - [Generate a new repository](https://github.com/saicaca/fuwari/generate) from this template or fork this repository.
-    - Or run one of the following commands:
-       ```sh
-       npm create fuwari@latest
-       yarn create fuwari
-       pnpm create fuwari@latest
-       bun create fuwari@latest
-       deno run -A npm:create-fuwari@latest
-       ```
-2. To edit your blog locally, clone your repository, run `pnpm install` to install dependencies.
-    - Install [pnpm](https://pnpm.io) `npm install -g pnpm` if you haven't.
-3. Edit the config file `src/config.ts` to customize your blog.
-4. Run `pnpm new-post <filename>` to create a new post and edit it in `src/content/posts/`.
-5. Deploy your blog to Vercel, Netlify, GitHub Pages, etc. following [the guides](https://docs.astro.build/en/guides/deploy/). You need to edit the site configuration in `astro.config.mjs` before deployment.
+仓库已通过 Git 集成绑定 EdgeOne Pages：**push 到 `master` 分支即自动构建部署**，无需手动操作。
 
-## 📝 Frontmatter of Posts
+- 构建命令：`pnpm build`（Astro 构建 + Pagefind 搜索索引），输出目录 `dist/`
+- 环境要求：Node.js >= 20
+
+**必需的资源绑定**：
+
+| 绑定 | 变量名 | 用途 |
+|------|--------|------|
+| KV 命名空间 | `BLOG_STATS` | 浏览量 / 点赞计数存储；未绑定时 `/api/stats` 会返回 500 |
+
+`/api/stats` 接口说明（`functions/api/stats.js`）：
+
+- `GET /api/stats?slug=<文章slug>` — 查询某篇文章的浏览量和点赞数
+- `POST /api/stats?slug=<文章slug>&action=view` — 浏览量 +1
+- `POST /api/stats?slug=<文章slug>&action=like` — 点赞 +1
+
+## ✍️ 写文章
+
+```sh
+pnpm new-post <filename>
+```
+
+然后在 `src/content/posts/` 中编辑生成的 Markdown 文件：
 
 ```yaml
 ---
-title: My First Blog Post
-published: 2023-09-09
-description: This is the first post of my new Astro blog.
-image: ./cover.jpg
-tags: [Foo, Bar]
-category: Front-end
-draft: false
-lang: jp      # Set only if the post's language differs from the site's language in `config.ts`
+title: 文章标题
+published: 2026-01-01
+description: 文章摘要
+image: ./cover.jpg            # 可选，封面图（相对文章目录或 /public）
+tags: [标签1, 标签2]
+category: 分类
+draft: false                  # true 则不会发布
 ---
 ```
 
-## 🧩 Markdown Extended Syntax
+站点标题、导航链接、头像、社交链接等在 `src/config.ts` 中修改；主题色、banner、目录开关也在这里配置。
 
-In addition to Astro's default support for [GitHub Flavored Markdown](https://github.github.com/gfm/), several extra Markdown features are included:
+## ⚡ 常用命令
 
-- Admonitions ([Preview and Usage](https://fuwari.vercel.app/posts/markdown-extended/#admonitions))
-- GitHub repository cards ([Preview and Usage](https://fuwari.vercel.app/posts/markdown-extended/#github-repository-cards))
-- Enhanced code blocks with Expressive Code ([Preview](https://fuwari.vercel.app/posts/expressive-code/) / [Docs](https://expressive-code.com/))
+| 命令 | 作用 |
+|:---------------------------|:----------------------------------------|
+| `pnpm install` | 安装依赖 |
+| `pnpm dev` | 启动本地开发服务器 `localhost:4321` |
+| `pnpm build` | 构建生产版本到 `./dist/`（含 Pagefind 索引） |
+| `pnpm preview` | 本地预览构建产物 |
+| `pnpm new-post <filename>` | 新建文章 |
+| `pnpm format` | 使用 Biome 格式化代码 |
 
-## ⚡ Commands
+## 📄 致谢与许可
 
-All commands are run from the root of the project, from a terminal:
-
-| Command                    | Action                                              |
-|:---------------------------|:----------------------------------------------------|
-| `pnpm install`             | Installs dependencies                               |
-| `pnpm dev`                 | Starts local dev server at `localhost:4321`         |
-| `pnpm build`               | Build your production site to `./dist/`             |
-| `pnpm preview`             | Preview your build locally, before deploying        |
-| `pnpm check`               | Run checks for errors in your code                  |
-| `pnpm format`              | Format your code using Biome                        |
-| `pnpm new-post <filename>` | Create a new post                                   |
-| `pnpm astro ...`           | Run CLI commands like `astro add`, `astro check`    |
-| `pnpm astro --help`        | Get help using the Astro CLI                        |
-
-## ✏️ Contributing
-
-Check out the [Contributing Guide](https://github.com/saicaca/fuwari/blob/main/CONTRIBUTING.md) for details on how to contribute to this project.
-
-## 📄 License
-
-This project is licensed under the MIT License.
-
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fsaicaca%2Ffuwari.svg?type=large&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Fsaicaca%2Ffuwari?ref=badge_large&issueType=license)
+- 界面与主题基于 [saicaca/fuwari](https://github.com/saicaca/fuwari)（MIT License），感谢原作者与社区贡献者
+- 本仓库的定制部分同样以 MIT License 发布
