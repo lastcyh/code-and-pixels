@@ -4,3 +4,10 @@ exclude_selectors:
   - "[data-pagefind-ignore]"
   - ".search-panel"
   - "#search-panel"
+  - "nav"
+  - "footer"
+  - ".sidebar"
+  - "pre code"
+
+# 强制使用中文分词
+force_language: "zh"

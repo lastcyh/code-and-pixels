@@ -1,0 +1,98 @@
+---
+import MainGridLayout from "../layouts/MainGridLayout.astro";
+import { i18n } from "../i18n/translation";
+import I18nKey from "../i18n/i18nKey";
+import { siteConfig } from "../config";
+import { getSortedPosts } from "../utils/content-utils";
+import PostCard from "../components/PostCard.astro";
+
+// 获取最近的3篇文章
+const allPosts = await getSortedPosts();
+const recentPosts = allPosts.slice(0, 3);
+---
+
+<MainGridLayout title={`404 - ${siteConfig.title}`} description={i18n(I18nKey.notFoundDescription)}>
+	<!-- 404 主要内容区域 -->
+	<div class="card-base w-full rounded-[var(--radius-large)] overflow-hidden relative mb-8 p-8 md:p-12">
+		<div class="flex flex-col items-center justify-center">
+			<div class="text-center space-y-6 animate-fade-in max-w-2xl">
+				<!-- 404 数字 - 简洁风格 -->
+				<div class="relative">
+					<h1 class="text-7xl md:text-8xl font-bold text-[var(--primary)] leading-none mb-4">
+						404
+					</h1>
+					<div class="h-1 w-16 bg-[var(--primary)] mx-auto rounded-full mb-6"></div>
+				</div>
+
+				<!-- 错误信息 -->
+				<div class="space-y-3">
+					<h2 class="text-xl md:text-2xl font-bold text-neutral-900 dark:text-neutral-50 transition">
+						{i18n(I18nKey.notFound)}
+					</h2>
+					<p class="text-sm md:text-base text-neutral-500 dark:text-neutral-400 transition">
+						{i18n(I18nKey.notFoundDescription)}
+					</p>
+				</div>
+
+				<!-- 返回按钮 -->
+				<div class="pt-6">
+					<a
+						href="/"
+						class="btn-regular inline-flex items-center gap-2 h-11 px-6 font-medium rounded-lg active:scale-95"
+					>
+						<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+							<path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+						</svg>
+						{i18n(I18nKey.backToHome)}
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- 可能感兴趣的文章 -->
+	{recentPosts.length > 0 && (
+		<div class="w-full">
+			<div class="mb-6">
+				<h2 class="text-2xl font-bold text-black/90 dark:text-white/90">
+					你可能感兴趣的文章
+				</h2>
+			</div>
+			<div class="space-y-5">
+				{recentPosts.map((post, index) => (
+					<PostCard
+						entry={post}
+						title={post.data.title}
+						url={`/posts/${post.slug}/`}
+						published={post.data.published}
+						updated={post.data.updated}
+						tags={post.data.tags}
+						category={post.data.category}
+						image={post.data.image}
+						description={post.data.description}
+						draft={post.data.draft}
+						style={`animation-delay: calc(var(--content-delay) + ${index * 100}ms)`}
+						class="onload-animation"
+					/>
+				))}
+			</div>
+		</div>
+	)}
+</MainGridLayout>
+
+<style>
+	@keyframes fade-in {
+		from {
+			opacity: 0;
+			transform: translateY(20px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	.animate-fade-in {
+		animation: fade-in 0.6s ease-out forwards;
+	}
+</style>

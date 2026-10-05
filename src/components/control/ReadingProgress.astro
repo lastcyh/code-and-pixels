@@ -1,0 +1,58 @@
+---
+// 阅读进度条组件
+---
+
+<div id="reading-progress-bar" class="reading-progress-container">
+    <div class="reading-progress-bar"></div>
+</div>
+
+<style>
+.reading-progress-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: transparent;
+    z-index: 100;
+    pointer-events: none;
+}
+
+.reading-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary) 0%, #a855f7 100%);
+    width: 0%;
+    transition: width 0.1s ease-out;
+    box-shadow: 0 0 8px var(--primary);
+}
+</style>
+
+<script>
+function updateReadingProgress() {
+    const progressBar = document.querySelector('.reading-progress-bar') as HTMLElement;
+    if (!progressBar) return;
+
+    const windowHeight = window.innerHeight;
+    const documentHeight = document.documentElement.scrollHeight;
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    
+    // 计算滚动百分比
+    const scrollPercentage = (scrollTop / (documentHeight - windowHeight)) * 100;
+    
+    // 限制在 0-100 之间
+    const clampedPercentage = Math.min(Math.max(scrollPercentage, 0), 100);
+    
+    progressBar.style.width = `${clampedPercentage}%`;
+}
+
+// 初始化
+updateReadingProgress();
+
+// 监听滚动事件
+window.addEventListener('scroll', updateReadingProgress, { passive: true });
+
+// Swup 页面切换时重新初始化
+document.addEventListener('swup:contentReplaced', () => {
+    updateReadingProgress();
+});
+</script>

@@ -1,9 +1,24 @@
 /* Page transition animations with Swup */
 html.is-changing .transition-swup-fade {
-    @apply transition-all duration-200
+    @apply transition-all duration-200 ease-out
 }
 html.is-animating .transition-swup-fade {
-    @apply opacity-0 translate-y-4
+    @apply opacity-0 translate-y-4 scale-[0.98]
+}
+
+/* 添加淡入淡出效果 */
+html.is-leaving .transition-swup-fade {
+    @apply opacity-100 translate-y-0 scale-100
+}
+
+/* 平滑滚动 */
+html {
+    scroll-behavior: smooth;
+}
+
+/* 页面切换时禁用平滑滚动 */
+html.is-changing {
+    scroll-behavior: auto;
 }
 
 /* Fade-in animations for components */

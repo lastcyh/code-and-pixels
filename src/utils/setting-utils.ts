@@ -28,6 +28,9 @@ export function setHue(hue: number): void {
 }
 
 export function applyThemeToDocument(theme: LIGHT_DARK_MODE) {
+	// 添加过渡动画
+	document.documentElement.style.setProperty('transition', 'background-color 0.3s ease, color 0.3s ease');
+	
 	switch (theme) {
 		case LIGHT_MODE:
 			document.documentElement.classList.remove("dark");
@@ -49,6 +52,11 @@ export function applyThemeToDocument(theme: LIGHT_DARK_MODE) {
 		"data-theme",
 		expressiveCodeConfig.theme,
 	);
+	
+	// 300ms 后移除过渡，避免影响其他动画
+	setTimeout(() => {
+		document.documentElement.style.removeProperty('transition');
+	}, 300);
 }
 
 export function setTheme(theme: LIGHT_DARK_MODE): void {

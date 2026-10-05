@@ -1,0 +1,37 @@
+/* TOC 优化样式 */
+
+/* 高亮当前阅读的目录项 */
+#toc a.visible {
+    color: var(--primary);
+    font-weight: 500;
+}
+
+/* 活动指示器平滑动画 */
+#active-indicator {
+    transition: top 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                height 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                opacity 0.2s ease;
+}
+
+/* 目录项悬停效果 */
+table-of-contents a {
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+table-of-contents a:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* 徽章缩放动画 */
+table-of-contents a > div:first-child {
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+table-of-contents a:hover > div:first-child {
+    transform: scale(1.1);
+}
+
+/* 平滑滚动 */
+table-of-contents {
+    scroll-behavior: smooth;
+}

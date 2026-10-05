@@ -4,6 +4,7 @@ import I18nKey from "../i18n/i18nKey";
 import { i18n } from "../i18n/translation";
 import { formatDateToYYYYMMDD } from "../utils/date-utils";
 import { getCategoryUrl, getTagUrl } from "../utils/url-utils";
+import ViewCount from "./widget/ViewCount.svelte";
 
 interface Props {
 	class: string;
@@ -13,6 +14,8 @@ interface Props {
 	category: string | null;
 	hideTagsForMobile?: boolean;
 	hideUpdateDate?: boolean;
+    slug?: string;
+    isPostPage?: boolean;
 }
 const {
 	published,
@@ -21,6 +24,8 @@ const {
 	category,
 	hideTagsForMobile = false,
 	hideUpdateDate = false,
+    slug,
+    isPostPage = false,
 } = Astro.props;
 const className = Astro.props.class;
 ---
@@ -79,4 +84,16 @@ const className = Astro.props.class;
             {!(tags && tags.length > 0) && <div class="transition text-50 text-sm font-medium">{i18n(I18nKey.noTags)}</div>}
         </div>
     </div>
+
+    <!-- view count -->
+    {slug && (
+        <div class="flex items-center">
+            <div class="meta-icon">
+                <Icon name="material-symbols:visibility-outline-rounded" class="text-xl"></Icon>
+            </div>
+            <div class="text-50 text-sm font-medium">
+                <ViewCount client:load slug={slug} increment={isPostPage} />
+            </div>
+        </div>
+    )}
 </div>

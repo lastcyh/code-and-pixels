@@ -26,9 +26,20 @@ import { pluginCustomCopyButton } from "./src/plugins/expressive-code/custom-cop
 
 // https://astro.build/config
 export default defineConfig({
-	site: "https://fuwari.vercel.app/",
+	site: "https://www.sakasa.cn/",
 	base: "/",
 	trailingSlash: "always",
+	
+	// 构建优化：自动内联小CSS文件，减少HTTP请求
+	build: {
+		inlineStylesheets: 'auto',
+	},
+	
+	// 图片优化：声明允许的外部图片域名
+	image: {
+		domains: ['q1.qlogo.cn'],
+	},
+	
 	integrations: [
 		tailwind({
 			nesting: true,
@@ -46,6 +57,7 @@ export default defineConfig({
 			updateHead: true,
 			updateBodyClass: false,
 			globalInstance: true,
+			animationSelector: '[class*="transition-swup-"]',
 		}),
 		icon({
 			include: {
@@ -155,6 +167,7 @@ export default defineConfig({
 	},
 	vite: {
 		build: {
+			reportCompressedSize: false, // 禁用压缩大小报告，加快构建速度
 			rollupOptions: {
 				onwarn(warning, warn) {
 					// temporarily suppress this warning

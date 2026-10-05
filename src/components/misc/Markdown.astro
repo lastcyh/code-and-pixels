@@ -31,11 +31,16 @@ document.addEventListener("click", function (e: MouseEvent) {
         }
 
         target.classList.add("success");
+        
+        // 修改 aria-label 提供更好的反馈
+        const originalLabel = target.getAttribute("aria-label");
+        target.setAttribute("aria-label", "已复制！");
 
         // 设置新的timeout并保存ID到按钮的自定义属性中
         const newTimeoutId = setTimeout(() => {
             target.classList.remove("success");
-        }, 1000);
+            target.setAttribute("aria-label", originalLabel || "Copy code");
+        }, 2000);
 
         target.setAttribute("data-timeout-id", newTimeoutId.toString());
     }
