@@ -32,3 +32,4 @@ yarn.lock
 
 # local backups
 *.zip
+.edgeone/
