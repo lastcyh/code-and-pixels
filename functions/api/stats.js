@@ -15,20 +15,6 @@ export async function onRequest({ request, env }) {
   }
 
   if (!slug) {
-    // TEMP DEBUG: list header names only (no values) — remove after finding client IP header
-    if (url.searchParams.get('debug') === 'headers') {
-      const eoKeys = (typeof request.eo === 'object' && request.eo) ? Object.keys(request.eo) : null;
-      return new Response(JSON.stringify({
-        names: [...request.headers.keys()],
-        hasEo: 'eo' in request,
-        eoType: typeof request.eo,
-        eoKeys,
-        hasClientIp: typeof request.eo?.clientIp !== 'undefined',
-        geoKeys: (typeof request.eo?.geo === 'object' && request.eo?.geo) ? Object.keys(request.eo.geo) : null,
-      }), {
-        headers: { 'Content-Type': 'application/json', ...corsHeaders }
-      });
-    }
     return new Response(JSON.stringify({ error: 'Missing slug' }), {
       status: 400,
       headers: { 'Content-Type': 'application/json', ...corsHeaders }
@@ -63,10 +49,11 @@ export async function onRequest({ request, env }) {
     if (request.method === 'POST') {
       if (action === 'view') {
         // 同一 IP 每天每篇文章只计一次浏览（key 符合 KV 文档的字符集，按 UTC 日期自然轮换）
+        // 客户端 IP 由平台注入的 request.eo.clientIp 提供
         let views = parseInt((await KV.get(key_views)) || '0');
-        const ip = request.headers.get('eo-connecting-ip')
+        const ip = request.eo?.clientIp
+          || request.headers.get('eo-connecting-ip')
           || (request.headers.get('x-forwarded-for') || '').split(',')[0].trim()
-          || request.headers.get('x-real-ip')
           || '';
         if (ip) {
           const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(ip));
