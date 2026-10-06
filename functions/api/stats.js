@@ -15,7 +15,13 @@ export async function onRequest({ request, env }) {
   }
 
   if (!slug) {
-    return new Response(JSON.stringify({ error: 'Missing slug' }), { 
+    // TEMP DEBUG: list header names only (no values) — remove after finding client IP header
+    if (url.searchParams.get('debug') === 'headers') {
+      return new Response(JSON.stringify({ names: [...request.headers.keys()] }), {
+        headers: { 'Content-Type': 'application/json', ...corsHeaders }
+      });
+    }
+    return new Response(JSON.stringify({ error: 'Missing slug' }), {
       status: 400,
       headers: { 'Content-Type': 'application/json', ...corsHeaders }
     });
