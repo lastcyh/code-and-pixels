@@ -1,0 +1,31 @@
+---
+// 2026-10 slug 规范化：旧文章 URL 的跳转页
+export function getStaticPaths() {
+	const redirects = {
+		pa1688: "/posts/crawl-1688/",
+		paamz: "/posts/crawl-amazon/",
+		paxianyu: "/posts/crawl-xianyu/",
+		teamspeak3: "/posts/teamspeak3-client/",
+		teamspeak3_linux: "/posts/teamspeak3-server/",
+		yolo_1: "/posts/yolov8-setup/",
+	};
+	return Object.entries(redirects).map(([oldSlug, target]) => ({
+		params: { oldSlug },
+		props: { target },
+	}));
+}
+
+const target = Astro.props.target;
+---
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="robots" content="noindex" />
+		<meta http-equiv="refresh" content={`0; url=${target}`} />
+		<link rel="canonical" href={target} />
+	</head>
+	<body>
+		<script is:inline define:vars={{ target }}>location.replace(target);</script>
+	</body>
+</html>

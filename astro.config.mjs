@@ -111,7 +111,13 @@ export default defineConfig({
 			}
 		}),
         svelte(),
-		sitemap(),
+		sitemap({
+			// 排除 2026-10 slug 规范化前的旧文章跳转页
+			filter: (page) =>
+				!["pa1688", "paamz", "paxianyu", "teamspeak3", "teamspeak3_linux", "yolo_1"].some(
+					(old) => page.includes(`/posts/${old}/`),
+				),
+		}),
 	],
 	markdown: {
 		remarkPlugins: [

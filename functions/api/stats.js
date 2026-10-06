@@ -45,6 +45,33 @@ export async function onRequest({ request, env }) {
   const key_views = `views::${slug}`;
   const key_likes = `likes::${slug}`;
 
+  // 文章 slug 规范化（2026-10）：首次访问新 slug 时，把旧 slug 的计数搬过来并清理旧 key
+  const OLD_SLUGS = {
+    'crawl-1688': 'pa1688',
+    'crawl-amazon': 'paamz',
+    'crawl-xianyu': 'paxianyu',
+    'teamspeak3-client': 'teamspeak3',
+    'teamspeak3-server': 'teamspeak3_linux',
+    'yolov8-setup': 'yolo_1',
+  };
+  const oldSlug = OLD_SLUGS[slug];
+  if (oldSlug) {
+    try {
+      if ((await KV.get(key_views)) === null) {
+        const oldViews = await KV.get(`views::${oldSlug}`);
+        if (oldViews !== null) await KV.put(key_views, oldViews);
+      }
+      if ((await KV.get(key_likes)) === null) {
+        const oldLikes = await KV.get(`likes::${oldSlug}`);
+        if (oldLikes !== null) await KV.put(key_likes, oldLikes);
+      }
+      await KV.delete(`views::${oldSlug}`);
+      await KV.delete(`likes::${oldSlug}`);
+    } catch (e) {
+      // 迁移失败不影响正常计数
+    }
+  }
+
   try {
     if (request.method === 'POST') {
       if (action === 'view') {
