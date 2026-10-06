@@ -48,12 +48,28 @@ export async function onRequest({ request, env }) {
   try {
     if (request.method === 'POST') {
       if (action === 'view') {
-        // 增加阅读量
-        let views = await KV.get(key_views);
-        views = parseInt(views || '0') + 1;
-        await KV.put(key_views, views.toString());
-        return new Response(JSON.stringify({ views }), { 
-          headers: { 'Content-Type': 'application/json', ...corsHeaders } 
+        // 同一 IP 每天每篇文章只计一次浏览（key 符合 KV 文档的字符集，按 UTC 日期自然轮换）
+        let views = parseInt((await KV.get(key_views)) || '0');
+        const ip = request.headers.get('eo-connecting-ip')
+          || (request.headers.get('x-forwarded-for') || '').split(',')[0].trim()
+          || request.headers.get('x-real-ip')
+          || '';
+        if (ip) {
+          const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(ip));
+          const ipHash = [...new Uint8Array(digest)].map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 16);
+          const day = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+          const seenKey = `v_seen_${slug}_${ipHash}_${day}`;
+          if (!(await KV.get(seenKey))) {
+            await KV.put(seenKey, '1');
+            views += 1;
+            await KV.put(key_views, String(views));
+          }
+        } else {
+          views += 1;
+          await KV.put(key_views, String(views));
+        }
+        return new Response(JSON.stringify({ views }), {
+          headers: { 'Content-Type': 'application/json', ...corsHeaders }
         });
       } else if (action === 'like') {
         // 增加点赞

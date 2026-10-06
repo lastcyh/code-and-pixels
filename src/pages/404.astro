@@ -54,9 +54,9 @@ const recentPosts = allPosts.slice(0, 3);
 	{recentPosts.length > 0 && (
 		<div class="w-full">
 			<div class="mb-6">
-				<h2 class="text-2xl font-bold text-black/90 dark:text-white/90">
-					你可能感兴趣的文章
-				</h2>
+					<h2 class="text-2xl font-bold text-black/90 dark:text-white/90">
+						{i18n(I18nKey.recentPosts)}
+					</h2>
 			</div>
 			<div class="space-y-5">
 				{recentPosts.map((post, index) => (

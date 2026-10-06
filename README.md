@@ -34,7 +34,7 @@
 `/api/stats` 接口说明（`functions/api/stats.js`）：
 
 - `GET /api/stats?slug=<文章slug>` — 查询某篇文章的浏览量和点赞数
-- `POST /api/stats?slug=<文章slug>&action=view` — 浏览量 +1
+- `POST /api/stats?slug=<文章slug>&action=view` — 浏览量 +1（同一 IP 每天每篇只计一次）
 - `POST /api/stats?slug=<文章slug>&action=like` — 点赞 +1
 
 ## ✍️ 写文章
