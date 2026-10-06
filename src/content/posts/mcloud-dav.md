@@ -1,5 +1,5 @@
 ---
-title: 我把移动云盘的分享链接，做成了一键部署的 WebDAV 媒体库
+title: 不用转存，把移动云盘分享链接变成 WebDAV 媒体库
 published: 2026-10-06
 description: 把移动云盘分享链接变成一键部署的 WebDAV 媒体库：Cloudflare Workers 免费层，Infuse、rclone 直接挂载。
 tags: [WebDAV, Cloudflare, 开源项目]
@@ -29,9 +29,10 @@ draft: false
 
 ## 2. 怎么部署
 
-1. 打开 [仓库 README](https://github.com/lastcyh/mcloud-dav)，点 **Deploy to Cloudflare** 按钮，确认后 Cloudflare 会自动创建 KV 和 Worker；
-2. 打开分配的 Worker 地址，自动进入配置向导——粘贴一个 **139 Authorization**（登录 yun.139.com 后 F12 从请求标头里复制，README 里有逐步说明），再设一个 WebDAV 的用户名密码，保存；
-3. 访问 `/admin`，把你的分享链接贴进去，格式是 `分类/标题 | 链接`，一行一条。
+1. **先 Fork 仓库到你自己的 GitHub 账号**——后续的自动清洗、文档更新都在你自己的仓库进行；
+2. 在你 fork 的 README 里点 **Deploy to Cloudflare** 按钮，Cloudflare 会自动创建 KV 和 Worker；
+3. 打开 Worker 地址进入配置向导：粘贴一个 **139 Authorization**（登录 yun.139.com 后 F12 从请求标头里复制，README 里有逐步说明），再设一个 WebDAV 的用户名密码，保存；
+4. 访问 `/admin`，把你的分享链接贴进去，格式是 `分类/标题 | 链接`，一行一条。
 
 到这里就部署完了。令牌约 30 天有效，Worker 会在到期前自动续期，平时不用管。
 
@@ -39,13 +40,15 @@ draft: false
 
 **少量**：就在 `/admin` 网页上贴，保存即生效。
 
-**大量**：把包含链接的 Markdown/文本放进仓库 `data/` 目录（格式参考示例文件），跑一下 `clean_links.py` 并上传；或者配好 Secrets 后让 GitHub Actions 每天自动清洗推送。
+**大量**：把包含链接的 Markdown/文本放进仓库 `data/` 目录（格式参考示例文件），跑一下 `clean_links.py` 并上传；或者在你 Fork 的仓库里配好三个 Secrets（`WORKER_URL` 和 WebDAV 账号密码），让 Actions 每天自动清洗推送。
 
 脚本会自动提取全部链接（兼容被 Markdown 拆碎的）、按 ID 去重、按文档标题层级建目录、把 `4K/1080P/内封简中` 这类噪音从名字里剥掉。目录长什么样完全由你的标题层级决定，一行写多个链接还可以把多条分享绑到同一个目录。
 
 ## 4. 怎么使用
 
 WebDAV 地址就是 Worker 地址本身，账号密码是配置向导里设置的（忘了打开 `/admin` 就能看到）。Infuse / nPlayer / Kodi 添加共享填进去就行；rclone 也是标准配置。
+
+目录树按你文档里的标题层级生成，文件按自然排序（`第2集` 在 `第10集` 前），分享根目录的套壳文件夹会自动下沉，播放器里直接看到视频文件。
 
 播放视频时 Worker 会实时解析一条移动云直链并 302 过去，流量直连移动云机房，不经过 Cloudflare。另外还提供一个 `/link?path=...` 直链接口，给下载工具和脚本用。
 
