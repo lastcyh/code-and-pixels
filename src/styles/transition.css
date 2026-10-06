@@ -11,16 +11,6 @@ html.is-leaving .transition-swup-fade {
     @apply opacity-100 translate-y-0 scale-100
 }
 
-/* 平滑滚动 */
-html {
-    scroll-behavior: smooth;
-}
-
-/* 页面切换时禁用平滑滚动 */
-html.is-changing {
-    scroll-behavior: auto;
-}
-
 /* Fade-in animations for components */
 @keyframes fade-in-up {
     0% {
