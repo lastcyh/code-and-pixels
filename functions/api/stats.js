@@ -17,7 +17,15 @@ export async function onRequest({ request, env }) {
   if (!slug) {
     // TEMP DEBUG: list header names only (no values) — remove after finding client IP header
     if (url.searchParams.get('debug') === 'headers') {
-      return new Response(JSON.stringify({ names: [...request.headers.keys()] }), {
+      const eoKeys = (typeof request.eo === 'object' && request.eo) ? Object.keys(request.eo) : null;
+      return new Response(JSON.stringify({
+        names: [...request.headers.keys()],
+        hasEo: 'eo' in request,
+        eoType: typeof request.eo,
+        eoKeys,
+        hasClientIp: typeof request.eo?.clientIp !== 'undefined',
+        geoKeys: (typeof request.eo?.geo === 'object' && request.eo?.geo) ? Object.keys(request.eo.geo) : null,
+      }), {
         headers: { 'Content-Type': 'application/json', ...corsHeaders }
       });
     }
