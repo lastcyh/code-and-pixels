@@ -10,6 +10,8 @@ export const en: Translation = {
 	[Key.tags]: "Tags",
 	[Key.categories]: "Categories",
 	[Key.recentPosts]: "Recent Posts",
+	[Key.relatedPosts]: "Related Posts",
+	[Key.popularPosts]: "Popular Posts",
 
 	[Key.comments]: "Comments",
 

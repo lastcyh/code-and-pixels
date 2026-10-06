@@ -13,6 +13,9 @@
 在 Fuwari 原有能力（Astro 5 + Svelte 5 + Tailwind CSS、明暗模式、主题色自定义、Pagefind 全文搜索、文章目录、RSS、平滑切页动画）基础上，做了以下定制：
 
 - 📊 **文章浏览量 & 点赞** — 基于 EdgeOne Pages Functions（`functions/api/stats.js`）+ KV 存储实现；浏览器端通过 sessionStorage / localStorage 防止刷新重复计数
+- 🔥 **热门文章 & 站点统计** — 侧栏展示浏览量 Top 5 与全站累计数据（`functions/api/popular.js`）
+- 🔗 **相关文章推荐** — 文章页底部按同分类 + 共同标签自动推荐
+- 🖼️ **动态 OG 分享卡片** — 构建时用 satori 为每篇文章生成带标题的分享图（`src/pages/og/`）
 - 📖 **阅读进度条** — 固定在页面顶部，跟随滚动（`src/components/control/ReadingProgress.astro`）
 - 🔍 **中文搜索优化** — Pagefind 强制中文分词（`pagefind.yml`）
 - 🚧 **自定义 404 页** — 展示最近的文章（`src/pages/404.astro`）

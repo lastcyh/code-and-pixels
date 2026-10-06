@@ -1,0 +1,67 @@
+---
+import { i18n } from "@i18n/translation";
+import I18nKey from "@i18n/i18nKey";
+import { getSortedPosts } from "@utils/content-utils";
+import { getPostUrlBySlug } from "@utils/url-utils";
+
+// 构建期把 slug → 标题/链接 的映射传给前端，运行时只需请求浏览量数据
+const posts = await getSortedPosts();
+const meta = Object.fromEntries(
+	posts.map((p) => [p.slug, { title: p.data.title, url: getPostUrlBySlug(p.slug) }]),
+);
+---
+
+<div class="card-base onload-animation rounded-[var(--radius-large)] py-3" style="animation-delay: 250ms">
+    <div class="font-bold text-lg text-black/90 dark:text-white/90 ml-4 my-2 transition">🔥 {i18n(I18nKey.popularPosts)}</div>
+    <div id="popular-posts" class="mx-2 flex flex-col" data-meta={JSON.stringify(meta)}></div>
+</div>
+
+<script>
+	const container = document.getElementById('popular-posts');
+	if (container) {
+		const meta = JSON.parse(container.dataset.meta || '{}');
+		fetch('/api/popular')
+			.then((r) => r.json())
+			.then((data) => {
+				const card = container.closest('.card-base');
+				if (!data.top || data.top.length === 0) {
+					card?.remove();
+					return;
+				}
+				data.top.forEach((item: { slug: string; views: number }, i: number) => {
+					const info = meta[item.slug];
+					if (!info) return;
+					const a = document.createElement('a');
+					a.href = info.url;
+					a.className =
+						'flex items-center gap-2 mx-2 px-2 py-2.5 rounded-lg hover:bg-[var(--btn-regular-bg)] active:scale-[0.98] transition';
+					const rank = document.createElement('span');
+					rank.className = `w-5 text-center text-sm font-bold shrink-0 ${
+						i < 3 ? 'text-[var(--primary)]' : 'text-black/30 dark:text-white/30'
+					}`;
+					rank.textContent = String(i + 1);
+					const title = document.createElement('span');
+					title.className = 'overflow-hidden text-ellipsis whitespace-nowrap text-sm text-black/75 dark:text-white/75';
+					title.textContent = info.title;
+					const views = document.createElement('span');
+					views.className = 'ml-auto text-xs text-black/30 dark:text-white/30 shrink-0';
+					views.textContent = String(item.views);
+					a.append(rank, title, views);
+					container.appendChild(a);
+				});
+				if (data.totals) {
+					const foot = document.createElement('div');
+					foot.className = 'mx-4 mt-1 pt-2 border-t border-dashed border-[var(--line-divider)] text-xs text-black/30 dark:text-white/30 flex gap-4';
+					const v = document.createElement('span');
+					v.textContent = `👁 ${data.totals.views}`;
+					const l = document.createElement('span');
+					l.textContent = `❤ ${data.totals.likes}`;
+					foot.append(v, l);
+					container.appendChild(foot);
+				}
+			})
+			.catch(() => {
+				container.closest('.card-base')?.remove();
+			});
+	}
+</script>
