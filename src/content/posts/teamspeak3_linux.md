@@ -1,15 +1,17 @@
 ---
 title: Debian 搭建 TeamSpeak 3 服务器教程
 published: 2025-11-13
-description: 一份在 Debian Linux 上搭建 TeamSpeak 3 服务器的完整教程和解决方案。
-tags: [TeamSpeak 3, Debian, Linux, 服务器, 教程, TS3]
+description: 在 Debian 上从零搭建 TeamSpeak 3 服务器：专用用户、防火墙、systemd 与常见故障排除。
+tags: [TeamSpeak, 教程, Linux, 服务器]
 category: 软件教程
 draft: false
 ---
 
-这是一份在 Debian (或 Ubuntu) 服务器上从零开始搭建 TeamSpeak 3 服务器的完整教程。本指南将重点放在安全和稳定上，会带你使用一个专用的非 root 用户来运行服务器。
+## 前言
 
-## 步骤一：系统更新与准备
+这是一份在 Debian（或 Ubuntu）服务器上从零搭建 TeamSpeak 3 服务器的完整教程。重点放在安全和稳定上：全程使用专用的非 root 用户来运行服务，并用 systemd 托管开机自启。
+
+## 1. 系统更新与准备
 
 首先，登录你的服务器，更新系统软件包列表并安装必要的工具：wget (用于下载) 和 bzip2 (用于解压)。
 
@@ -19,7 +21,7 @@ sudo apt upgrade -y
 sudo apt install wget bzip2 -y
 ```
 
-## 步骤二：创建专用用户
+## 2. 创建专用用户
 
 出于安全考虑，强烈不推荐在 root 用户下运行任何面向公众的服务。需要创建一个名为 ts3 的专用系统用户，并禁止其 SSH 登录。
 
@@ -29,11 +31,11 @@ sudo adduser --disabled-login ts3
 
 执行命令后，系统会提示你输入"Full Name"等用户信息。这些信息并非必需，你可以一路按 Enter 键跳过。最后当系统询问 Is the information correct? [Y/n] 时，输入 Y 并按 Enter 确认即可。
 
-## 步骤三：下载并安装 TeamSpeak 3
+## 3. 下载并安装 TeamSpeak 3
 
 你需要以 root 身份下载文件，将其解压到 ts3 用户的主目录，然后立即修复文件权限。
 
-### 1. 下载服务器文件
+### 3.1 下载服务器文件
 
 请访问 TeamSpeak 官方下载页面 获取最新的 64 位 Linux 服务器链接。
 
@@ -42,7 +44,7 @@ sudo adduser --disabled-login ts3
 wget https://files.teamspeak-services.com/releases/server/3.13.7/teamspeak3-server_linux_amd64-3.13.7.tar.bz2
 ```
 
-### 2. 解压到 ts3 的主目录
+### 3.2 解压到 ts3 的主目录
 
 将文件直接解压到刚创建的 /home/ts3 目录中。
 
@@ -50,7 +52,7 @@ wget https://files.teamspeak-services.com/releases/server/3.13.7/teamspeak3-serv
 sudo tar -xf teamspeak3-server_linux_amd64-*.tar.bz2 -C /home/ts3
 ```
 
-### 3. 整理文件并接受许可
+### 3.3 整理文件并接受许可
 
 解压会生成一个 teamspeak3-server_linux_amd64 目录，需要将里面的文件都移出来。
 
@@ -66,7 +68,7 @@ sudo rm teamspeak3-server_linux_amd64-*.tar.bz2
 sudo touch /home/ts3/.ts3server_license_accepted
 ```
 
-### 4. 修复文件所有权
+### 3.4 修复文件所有权
 
 由于之前是以 root 身份操作的，所有文件现在都归 root 所有。必须将它们的所有权交还给 ts3 用户。
 
@@ -78,11 +80,11 @@ sudo touch /home/ts3/.ts3server_license_accepted
 sudo chown -R ts3:ts3 /home/ts3
 ```
 
-## 步骤四：首次运行并获取管理员 Token
+## 4. 首次运行并获取管理员 Token
 
 文件准备就绪后，需要以 ts3 用户的身份安全地启动一次服务器，以获取管理员密钥。
 
-### 1. 临时切换到 ts3 用户
+### 4.1 临时切换到 ts3 用户
 
 使用此命令，即使用户被禁止登录，也可以临时获取一个 shell：
 
@@ -90,7 +92,7 @@ sudo chown -R ts3:ts3 /home/ts3
 sudo su -s /bin/bash ts3
 ```
 
-### 2. 启动服务器
+### 4.2 启动服务器
 
 此时的提示符应该是 ts3@...。
 
@@ -99,7 +101,7 @@ cd /home/ts3  # 确保在 /home/ts3 目录里
 ./ts3server_startscript.sh start
 ```
 
-### 3. 获取 Token
+### 4.3 获取 Token
 
 服务器启动后，Token 会保存在日志中。运行：
 
@@ -110,7 +112,7 @@ grep "token=" logs/*_1.log | tail -n 1
 
 你会看到类似 `token=XXXXXXXXXXXXXXXXXXXXXXXXXX` 的输出。请立即复制并保存好这个 Token！这是首次登录所需的管理员密钥。
 
-### 4. 停止服务器并退出
+### 4.4 停止服务器并退出
 
 获取 Token 后，先停止服务器，以便稍后使用 systemd 服务来管理它。
 
@@ -121,7 +123,7 @@ exit
 
 (输入 exit 后，将退回到 root 用户提示符)
 
-## 步骤五：配置防火墙
+## 5. 配置防火墙
 
 你需要开放服务器的防火墙端口。如果你使用的是 ufw（Debian 默认）：
 
@@ -140,17 +142,17 @@ sudo ufw enable
 云服务器注意：如果你使用的是腾讯云、阿里云等云服务商，可能不需要输入上面指令，但是必须登录到云服务商的网页控制台，在"安全组"或"防火墙"规则中，放行 UDP: 9987 和 TCP: 30033, 10011 这几个端口。建议先去控制台放开端口后测试一下。
 :::
 
-## 步骤六：创建 systemd 服务（开机自启）
+## 6. 创建 systemd 服务（开机自启）
 
 为了让服务器能开机自启并易于管理，推荐创建一个 systemd 服务。
 
-### 1. 创建服务文件
+### 6.1 创建服务文件
 
 ```bash
 sudo nano /etc/systemd/system/teamspeak.service
 ```
 
-### 2. 粘贴以下内容
+### 6.2 粘贴以下内容
 
 将下面的所有文本复制粘贴到 nano 编辑器中。
 
@@ -176,7 +178,7 @@ WantedBy=multi-user.target
 
 (按 Ctrl + X，然后按 Y，最后按 Enter 保存退出)
 
-### 3. 启动并启用服务
+### 6.3 启动并启用服务
 
 ```bash
 sudo systemctl daemon-reload          # 重新加载配置
@@ -184,7 +186,7 @@ sudo systemctl enable teamspeak.service # 设置开机自启
 sudo systemctl start teamspeak.service  # 立即启动
 ```
 
-### 4. 检查服务状态
+### 6.4 检查服务状态
 
 ```bash
 sudo systemctl status teamspeak.service
@@ -192,20 +194,18 @@ sudo systemctl status teamspeak.service
 
 如果一切正常，你应该会看到 Active: active (running)。
 
-## 步骤七：连接服务器，使用 Token
+## 7. 连接服务器并使用 Token
 
-打开你的 TeamSpeak 3 客户端。连接你的服务器 IP。此时连接，客户端可能不会自动弹窗提示输入 Token（因为它可能已记录过此服务器）。请在客户端菜单栏，手动点击：权限 (Permissions) -> 使用权限密钥 (Use Privilege Key)。把你在步骤四拿到的那个 token 粘贴进去。
+打开你的 TeamSpeak 3 客户端。连接你的服务器 IP。此时连接，客户端可能不会自动弹窗提示输入 Token（因为它可能已记录过此服务器）。请在客户端菜单栏，手动点击：权限 (Permissions) -> 使用权限密钥 (Use Privilege Key)。把你在步骤 4 拿到的那个 token 粘贴进去。
 
-至此，服务器已搭建完毕。
-
-## ⭐️ 故障排除 ⭐️
+## 8. 故障排除
 
 
 ### 故障一：服务起不来，systemctl status 显示 (auto-restart) 或 (code=killed, signal=SEGV)
 
 **问题：** 服务器崩溃并无限重启，日志中出现 Segmentation fault (段错误)。
 
-**原因：** 几乎 100% 是因为你在步骤三的第 4 步 (chown) 之前，曾不小心以 root 身份启动了服务器。root 用户创建的临时锁文件（通常在 /dev/shm 中）与 ts3 用户冲突，导致崩溃。
+**原因：** 几乎 100% 是因为你在步骤 3.4 (chown) 之前，曾不小心以 root 身份启动了服务器。root 用户创建的临时锁文件（通常在 /dev/shm 中）与 ts3 用户冲突，导致崩溃。
 
 **解决方案 (最简单)：** 重启服务器。重启会清除所有临时的共享内存和锁文件。
 
@@ -297,4 +297,8 @@ sudo systemctl start teamspeak.service
 
 #### 使用新 Token
 
-现在连接你的 TS3 客户端。点击 权限 (Permissions) -> 使用权限密钥 (Use Privilege Key)。粘贴你在步骤 6 中获取的那个新 Token。你的管理员权限就回来了！
+现在连接你的 TS3 客户端。点击 权限 (Permissions) -> 使用权限密钥 (Use Privilege Key)。粘贴上面获取的新 Token，你的管理员权限就回来了！
+
+## 总结
+
+至此服务器就搭建完毕了：专用用户运行、防火墙放行、systemd 托管开机自启，客户端连接后用 Token 拿到管理员权限，就可以开始建频道邀请朋友了。遇到服务起不来或管理员权限丢失的情况，上面第 8 节的故障排除覆盖了这两个最常见的坑。

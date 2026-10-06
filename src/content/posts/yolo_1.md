@@ -1,15 +1,15 @@
 ---
 title: YOLOv8 深度学习环境搭建
 published: 2025-11-26
-description: 本文记录在 Windows 11 下从零搭建 YOLOv8 深度学习环境的完整流程，包括 VS Code、Miniconda、Python 环境、Conda 协议错误修复，以及 CUDA 与 PyTorch 的对应关系。
-tags: [YOLOv8, 深度学习, PyTorch, Conda, 环境搭建]
+description: Windows 11 下从零搭建 YOLOv8 GPU 训练环境：VS Code、Miniconda、PyTorch 与常见坑。
+tags: [YOLOv8, 深度学习, 环境搭建]
 category: 深度学习
 draft: false
 ---
 
-# YOLOv8 深度学习环境搭建全纪录 (VSCode + Conda + GPU 加速)
+## 前言
 
-本文将带你搭建一个可直接训练 YOLOv8 的 GPU 深度学习环境，包括 VS Code、Miniconda、PyTorch GPU 版、YOLOv8 等。
+这篇记录在 Windows 11 上从零搭建一套可直接训练 YOLOv8 的 GPU 深度学习环境的完整过程：VS Code、Miniconda、PyTorch GPU 版一个个来，顺带修掉会撞见的 Conda 协议报错。
 
 ## 1. 准备工作
 
@@ -78,7 +78,7 @@ pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
 ## 3. Miniconda 环境配置（含路径说明）
 
 :::important
-这是最关键的一步，我们将创建一个独立的虚拟环境用于 YOLOv8 项目。
+这是最关键的一步：创建一个独立的虚拟环境，给 YOLOv8 项目专用。
 :::
 
 ### 3.1 安装 Miniconda
@@ -179,6 +179,7 @@ pip install ultralytics
 ```bash
 pip install opencv-python pillow numpy
 ```
+
 ## 5. 在 VS Code 中关联 Conda 虚拟环境
 
 :::note
@@ -229,3 +230,7 @@ GPU 数量: 1
 ```
 
 如以上显示，则 GPU 加速已配置成功。
+
+## 总结
+
+到这里环境就绪了：`torch.cuda.is_available()` 返回 True，就可以直接开训 YOLOv8。后面如果训练时报 CUDA 相关错误，优先排查显卡驱动版本和 PyTorch 的 CUDA 版本是否匹配；另外装新包时记得始终在 `(yolov8)` 环境里操作，别把 base 环境污染了。

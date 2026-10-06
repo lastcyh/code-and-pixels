@@ -1,8 +1,8 @@
 ---
 title: 闲鱼爬虫爬爬乐：抓包分析与Playwright实战
 published: 2026-01-09
-description: 详细记录如何使用 Playwright + 流量监听方案绕过闲鱼的签名验证，实现数据抓取的完整实战教程
-tags: [Python, 爬虫, Playwright, 闲鱼, 抓包分析]
+description: 用 Playwright 流量监听绕过闲鱼的签名验证，抓取卖家商品数据的完整实战。
+tags: [Python, 爬虫, Playwright, 抓包分析, 闲鱼]
 category: Python实战
 draft: false
 ---
@@ -15,11 +15,11 @@ draft: false
 
 ## 一、硬核抓包：数据到底藏在哪？
 
-闲鱼 Web 端的数据加载逻辑非常典型：**HTML 骨架 + API 异步加载数据**。这意味着直接爬 HTML 源码是拿不到数据的，我们必须去分析 Network 网络请求。
+闲鱼 Web 端的数据加载逻辑非常典型：**HTML 骨架 + API 异步加载数据**。这意味着直接爬 HTML 源码是拿不到数据的，得去分析 Network 网络请求。
 
 ### 1. 列表页抓包分析
 
-打开卖家主页，按 F12 打开开发者工具，切换到 Network -> Fetch/XHR。当我们向下滑动加载更多商品时，会发现一个关键请求：
+打开卖家主页，按 F12 打开开发者工具，切换到 Network -> Fetch/XHR。向下滑动加载更多商品时，会发现一个关键请求：
 
 **接口名称**：`mtop.idle.web.xyh.item.list`
 
@@ -66,7 +66,7 @@ draft: false
 
 ![抓包2](https://cdn.sakasa.cn/paxianyu/抓包2.png)
 
-**实战结论**：我们在写代码时，必须进行二次解析：先解析外层 JSON，提取出 `shareInfoJsonString`，再对这个字符串进行 `json.loads`，才能拿到高清原图列表（`images`）和详细描述（`content`）。
+**实战结论**：写代码时必须做二次解析：先解析外层 JSON，提取出 `shareInfoJsonString`，再对这个字符串进行 `json.loads`，才能拿到高清原图列表（`images`）和详细描述（`content`）。
 
 ## 二、避坑指南：四大"雷点"
 
@@ -92,7 +92,7 @@ draft: false
 
 **现象**：抓取 300 个商品需要半小时，大部分时间花在加载图片上。
 
-**原因**：我们只需要 JSON 数据，但浏览器默认会下载网页上的所有图片，浪费带宽和时间。
+**原因**：我们只需要 JSON 数据，但浏览器默认会把网页上的所有图片都下载一遍，浪费带宽和时间。
 
 **解决**：利用 Playwright 的路由拦截功能，屏蔽所有图片和字体文件的请求。
 
@@ -170,7 +170,7 @@ def parse_detail_packet(data):
 
 ### 4. 异步并发控制
 
-为了既快又不被封 IP，我们使用 `asyncio.Semaphore` 来限制同时打开的浏览器标签页数量（推荐 3 个）。
+为了既快又不被封 IP，我用 `asyncio.Semaphore` 来限制同时打开的浏览器标签页数量（推荐 3 个）。
 
 ```python
 # 限制最大并发数为 3
@@ -190,7 +190,7 @@ async def worker(context, pid):
 
 ## 总结
 
-通过 Playwright 的 **"浏览器自动化 + 流量监听"** 模式，我们成功绕过了复杂的签名验证。
+通过 Playwright 的 **"浏览器自动化 + 流量监听"** 模式，我成功绕过了复杂的签名验证。
 
 **实战效果**：
 

@@ -1,8 +1,8 @@
 ---
 title: 亚马逊爬虫爬爬乐：商品信息与视频下载
 published: 2026-01-12
-description: 从正则匹配到堆栈式 JSON 提取，FFmpeg 多进程并发，深度解析 Amazon 商品页面的数据采集方案。
-tags: [Python, Playwright, FFmpeg, 抓包分析, 亚马逊]
+description: Playwright + 堆栈式 JSON 提取 + FFmpeg 并发，搞定亚马逊商品信息与视频下载。
+tags: [Python, 爬虫, Playwright, 抓包分析, 亚马逊]
 category: Python实战
 draft: false
 ---
@@ -13,11 +13,11 @@ draft: false
 
 相比于 1688，亚马逊的反爬机制和页面复杂度提升了一个量级，对比下来闲鱼简直是新手村（哭。特别是它的 **Twister 变体系统**（即颜色、尺寸的联动逻辑）和**混合加载机制**，让传统的 DOM 解析几乎失效。
 
-在经历了数次的试错，我构建了一套基于 **Playwright + 堆栈式数据提取 + FFmpeg 并发** 的稳定方案。本文分享我们在处理 SKU 映射、高清视频下载以及懒加载交互上的核心技术实现。
+在经历了数次试错之后，我构建了一套基于 **Playwright + 堆栈式数据提取 + FFmpeg 并发** 的稳定方案。本文记录我在处理 SKU 映射、高清视频下载以及懒加载交互上的核心技术实现。
 
 ## 一、核心难点分析
 
-在开发初期，我们主要面临三大挑战：
+在开发初期，我主要面临三大挑战：
 
 1. **数据碎片化**：亚马逊的 SKU 数据（图片、ASIN、属性）并不在一个统一的 JSON 里，而是分散在 `jQuery.parseJSON`、`P.register` 以及动态 AJAX 请求中
 2. **代码压缩与混淆**：页面源码经过高度压缩（Minified），一行代码可能长达几万字符。简单的正则表达式在匹配嵌套 JSON 时极其容易失效或溢出
@@ -25,7 +25,7 @@ draft: false
 
 ## 二、架构设计
 
-为了解决上述问题，我们采用了如下的模块化架构：
+为了解决上述问题，我采用了如下的模块化架构：
 
 - **交互层 (Interaction)**：使用 Playwright 进行"拉锯式"滚动，触发所有懒加载组件
 - **解析层 (Parser)**：放弃不可靠的正则全匹配，用字符堆栈提取核心 JSON 数据
@@ -47,7 +47,7 @@ draft: false
 
 **解决方案：字符堆栈分析法**
 
-既然正则搞不定嵌套，我们就模拟编译器的原理。从变量定义处开始，逐个字符读取，遇到 `{` 入栈（计数+1），遇到 `}` 出栈（计数-1）。当计数器归零时，我们就完美剥离出了一个完整的 JSON 对象。
+既然正则搞不定嵌套，那就模拟编译器的思路：从变量定义处开始，逐个字符读取，遇到 `{` 入栈（计数+1），遇到 `}` 出栈（计数-1）。当计数器归零时，就完美剥离出了一个完整的 JSON 对象。
 
 ```python
 def extract_json_by_stack(html_content):
@@ -93,7 +93,7 @@ def extract_json_by_stack(html_content):
 
 ```
 
-通过这个方法，我们成功拿到了 `colorImages`（高清图映射）和 `sortedDimValuesForAllDims`（SKU 映射关系），无论亚马逊前端代码如何压缩，只要结构不变，数据就能取到。
+通过这个方法，我成功拿到了 `colorImages`（高清图映射）和 `sortedDimValuesForAllDims`（SKU 映射关系），无论亚马逊前端代码如何压缩，只要结构不变，数据就能取到。
 
 ### 2. 视频下载：FFmpeg 多进程并发
 
@@ -103,7 +103,7 @@ def extract_json_by_stack(html_content):
 
 不要尝试用 Python 去解析 m3u8 然后一个个下 ts 切片再合并，那样效率太低且容易出错。最稳健的方法是直接调用系统安装的 `ffmpeg`。
 
-为了提升速度，我们引入了 `asyncio.Semaphore` 来控制并发数，同时开启 5 个 FFmpeg 子进程进行下载。
+为了提升速度，我引入了 `asyncio.Semaphore` 来控制并发数，同时开启 5 个 FFmpeg 子进程进行下载。
 
 ```python
 async def download_video_ffmpeg(url, path, semaphore):
@@ -138,7 +138,7 @@ async def download_video_ffmpeg(url, path, semaphore):
 
 亚马逊页面有大量的 Lazy Load （懒加载）机制。关联视频（Related Videos）和买家秀通常在页面底部，如果不滚动到可视区域，浏览器根本不会发送请求。
 
-简单的 `page.keyboard.press("PageDown")` 往往不够，因为滑得太快服务器反应不过来。我们实现了一种**“拉锯式滚动”**策略：
+简单的 `page.keyboard.press("PageDown")` 往往不够，因为滑得太快服务器反应不过来。所以我实现了一种**"拉锯式滚动"**策略：
 
 ```python
 # 获取页面总高度
@@ -204,11 +204,11 @@ Amazon_Downloads/
 
 ## 总结
 
-开发亚马逊爬虫的过程，实际上是一个与**“前端工程化”**博弈的过程。
+开发亚马逊爬虫的过程，实际上是一个与**"前端工程化"**博弈的过程。
 
-1. 页面源码不再是简单的 HTML，而是被 Webpack 等工具打包压缩后的 JS 闭包，这逼迫我们放弃正则，转向**堆栈分析**
-2. 媒体资源不再是直链，而是流媒体协议（HLS），这要求我们引入 **FFmpeg** 进行流处理
-3. 数据不再是静态渲染，而是各种 Hydration 和 Lazy Load，这要求我们编写更拟人的**交互脚本**
+1. 页面源码不再是简单的 HTML，而是被 Webpack 等工具打包压缩后的 JS 闭包，逼得我放弃正则，转向**堆栈分析**
+2. 媒体资源不再是直链，而是流媒体协议（HLS），要求引入 **FFmpeg** 进行流处理
+3. 数据不再是静态渲染，而是各种 Hydration 和 Lazy Load，要求编写更拟人的**交互脚本**
 
 其实本来想做每个 SKU 的 SIZE 和价格都标出来，即颜色 + ASIN + 可供选择的 SIZE + 价格。奈何亚马逊的页面复杂到我无法解析，基本上每点一个颜色，都会回传一大批数据，我无法使用抓包分析，或许直接抓 DOM 可以，但是太麻烦了，我也不想做（被这个恶心到了，或许某天闲着没事会来尝试一下）。本脚本开发时间耗时接近 8 个小时。
 
